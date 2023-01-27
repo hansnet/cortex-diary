@@ -36,7 +36,6 @@ namespace ei8.Cortex.Diary.Application.Settings
         string Longitude { get; set; }
         bool AllowGpsLocation { get; set; }
 
-        int UpdateCheckInterval { get; }
         string OidcAuthority { get; }
         string ClientId { get; }
         string ClientSecret { get; }
@@ -46,7 +45,9 @@ namespace ei8.Cortex.Diary.Application.Settings
         bool ValidateServerCertificate { get; set; }
         string LoginCallback { get; set; }
         string LogoutCallback { get; set; }
-        string ApplicationUrl { get; set; }       
+        string ApplicationUrl { get; set; }
+        string AppTitle { get; set; }
+        string AppIcon { get; set; }
 
         void Clear();
     }

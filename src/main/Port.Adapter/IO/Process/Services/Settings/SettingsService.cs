@@ -55,7 +55,6 @@ namespace ei8.Cortex.Diary.Port.Adapter.IO.Process.Services.Settings
         private const string IdLatitude = "latitude";
         private const string IdLongitude = "longitude";
         private const string IdAllowGpsLocation = "allow_gps_location";
-        private const string IdUpdateCheckInterval = "update_check_interval";
         private const string IdOidcAuthority = "oidc_authority";
         private const string IdClientId = "client_id";
         private const string IdClientSecret = "client_secret";
@@ -66,19 +65,22 @@ namespace ei8.Cortex.Diary.Port.Adapter.IO.Process.Services.Settings
         private const string IdLoginCallback = "login_callback";
         private const string IdLogoutCallback = "logout_callback";
         private const string IdApplicationUrl = "application_url";
+        private const string IdAppTitle = "app_title";
+        private const string IdAppIcon = "app_icon";
 
         private readonly bool UseMocksDefault = true;
         private readonly bool UseFakeLocationDefault = false;
         private readonly double FakeLatitudeDefault = 47.604610d;
         private readonly double FakeLongitudeDefault = -122.315752d;
         private readonly bool AllowGpsLocationDefault = false;
-        private readonly int UpdateCheckIntervalDefault = int.Parse(Environment.GetEnvironmentVariable(EnvironmentVariableKeys.UpdateCheckInterval));
         private readonly string OidcAuthorityDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.OidcAuthority);
         private readonly string ClientIdDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.ClientId);
         private readonly string ClientSecretDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.ClientSecret);
         private readonly string DatabasePathDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.DatabasePath);
         private readonly string BasePathDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.BasePath);
         private readonly string PluginsPathDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.PluginsPath);
+        private readonly string AppTitleDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.AppTitle);
+        private readonly string AppIconDefault = Environment.GetEnvironmentVariable(EnvironmentVariableKeys.AppIcon);
         private readonly bool ValidateServerCertificateDefault = 
             bool.TryParse(Environment.GetEnvironmentVariable(EnvironmentVariableKeys.ValidateServerCertificate), out bool result) ? 
                 result : 
@@ -111,12 +113,6 @@ namespace ei8.Cortex.Diary.Port.Adapter.IO.Process.Services.Settings
             set => AppSettings.AddOrUpdateValue(IdLogoutCallback, value);
         }
 
-        public int UpdateCheckInterval
-        {
-            get => AppSettings.GetValueOrDefault(IdUpdateCheckInterval, UpdateCheckIntervalDefault);
-            set => AppSettings.AddOrUpdateValue(IdUpdateCheckInterval, value);
-        }
-
         public string OidcAuthority
         {
             get => AppSettings.GetValueOrDefault(IdOidcAuthority, OidcAuthorityDefault);
@@ -141,16 +137,27 @@ namespace ei8.Cortex.Diary.Port.Adapter.IO.Process.Services.Settings
             set => AppSettings.AddOrUpdateValue(IdDatabasePath, value);
         }
 
+        public string BasePath
+        {
+            get => AppSettings.GetValueOrDefault(IdBasePath, BasePathDefault);
+            set => AppSettings.AddOrUpdateValue(IdBasePath, value);
+        }
+
         public string PluginsPath
         {
             get => AppSettings.GetValueOrDefault(IdPluginsPath, PluginsPathDefault);
             set => AppSettings.AddOrUpdateValue(IdPluginsPath, value);
         }
 
-        public string BasePath
+        public string AppTitle
         {
-            get => AppSettings.GetValueOrDefault(IdBasePath, BasePathDefault);
-            set => AppSettings.AddOrUpdateValue(IdBasePath, value);
+            get => AppSettings.GetValueOrDefault(IdAppTitle, AppTitleDefault);
+            set => AppSettings.AddOrUpdateValue(IdAppTitle, value);
+        }
+        public string AppIcon
+        {
+            get => AppSettings.GetValueOrDefault(IdAppIcon, AppIconDefault);
+            set => AppSettings.AddOrUpdateValue(IdAppIcon, value);
         }
 
         public bool ValidateServerCertificate
@@ -205,13 +212,17 @@ namespace ei8.Cortex.Diary.Port.Adapter.IO.Process.Services.Settings
             this.AppSettings.Remove(IdLatitude);
             this.AppSettings.Remove(IdLongitude);
             this.AppSettings.Remove(IdAllowGpsLocation);
-            this.AppSettings.Remove(IdUpdateCheckInterval);
             this.AppSettings.Remove(IdOidcAuthority);
             this.AppSettings.Remove(IdClientId);
             this.AppSettings.Remove(IdClientSecret);
             this.AppSettings.Remove(IdLoginCallback);
             this.AppSettings.Remove(IdApplicationUrl);
             this.AppSettings.Remove(IdLogoutCallback);
+        }
+
+        void ISettingsService.Clear()
+        {
+            throw new NotImplementedException();
         }
     }
 }

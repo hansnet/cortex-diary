@@ -1,62 +1,30 @@
-﻿@page "/cortex/{name}"
+﻿@page "/{name}"
 @using System.Reflection
 @using System.IO
 @using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Http
 @using ei8.Cortex.Diary.Application.Identity
 @using ei8.Cortex.Diary.Application.Neurons
 @using ei8.Cortex.Diary.Application.Settings
+@using ei8.Cortex.Diary.Application.Subscriptions
 @using ei8.Cortex.Diary.Port.Adapter.Common
-@inject IJSRuntime jsRuntime
+@using ei8.Cortex.Diary.Port.Adapter.UI.Views.Blazor.Common
+@using ei8.Cortex.Diary.Port.Adapter.UI.Views.Common
 
-@if (componentName is not null)
+@inject IHttpContextAccessor HttpContextAccessor
+@inject INeuronQueryService NeuronQueryService
+@inject INeuronApplicationService NeuronApplicationService
+@inject ITerminalApplicationService TerminalApplicationService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject ISettingsService SettingsService
+@inject IIdentityService IdentityService
+@inject ISubscriptionApplicationService SubscriptionApplicationService
+@inject ISubscriptionQueryService SubscriptionsQueryService
+@inject IList<Assembly> PluginAssemblies
+
+@if (this.componentType is not null)
 {
-    <DynamicComponent Type="componentName" Parameters="@service"></DynamicComponent>
-}
-
-@code {
-
-    [Inject] INeuronQueryService neuronQueryService { set; get; }
-    [Inject] INeuronApplicationService neuronApplicationService { set; get; }
-    [Inject] ITerminalApplicationService terminalApplicationService { set; get; }
-    [Inject] IToastService toastService { set; get; }
-    [Inject] ISettingsService settingsService { set; get; }
-    [Inject] IIdentityService identityService { set; get; }
-
-    [Parameter]
-    public string Name { get; set; }
-    public Type componentName;
-
-    [Inject]
-    public IWebHostEnvironment Environment { get; set; }
-
-    Dictionary<string, object> service = new Dictionary<string, object>();
-
-    protected override void OnInitialized()
-    {
-        service.Add("neuronQueryService", neuronQueryService);
-        service.Add("neuronApplicationService", neuronApplicationService);
-        service.Add("terminalApplicationService", terminalApplicationService);
-        service.Add("toastService", toastService);
-        service.Add("settingsService", settingsService);
-        service.Add("identityService", identityService);
-
-    }
-
-
-    protected override void OnParametersSet()
-    {
-        //scan assembly from a folder
-        var path = this.settingsService.PluginsPath;
-        string[] allfiles = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
-
-        foreach (var file in allfiles)
-        {
-            var assembly = Assembly.LoadFrom(file);
-            var fullname = assembly.GetTypes().FirstOrDefault(x => x.Name.ToLower() == Name.ToLower())?.FullName;
-            if (fullname != null)
-                componentName = assembly.GetType(fullname);
-        }
-
-        base.OnParametersSet();
-    }
+    <DynamicComponent Type="this.componentType" Parameters="@this.parameters"></DynamicComponent>
 }
